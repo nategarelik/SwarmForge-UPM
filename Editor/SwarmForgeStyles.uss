@@ -1,188 +1,179 @@
-.main-container {
+.root {
     padding: 16px;
-    flex-grow: 1;
+    background-color: #2D2D2D;
+    min-width: 400px;
+    min-height: 600px;
 }
 
 .header {
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-    border-bottom-width: 1px;
-    border-bottom-color: rgba(255, 255, 255, 0.1);
-}
-
-.title {
-    font-size: 24px;
+    font-size: 20px;
     -unity-font-style: bold;
-    color: #4B9EF9;
-    margin-bottom: 4px;
-}
-
-.subtitle {
-    font-size: 14px;
-    opacity: 0.7;
+    color: #E4E4E4;
+    margin-bottom: 12px;
 }
 
 .section {
+    margin-top: 16px;
     margin-bottom: 16px;
-    padding: 12px;
-    background-color: rgba(40, 40, 40, 0.3);
-    border-radius: 4px;
 }
 
-.section-header {
-    font-size: 16px;
+.section-label {
+    font-size: 14px;
     -unity-font-style: bold;
+    color: #B4B4B4;
     margin-bottom: 8px;
-    color: #4B9EF9;
 }
 
 .prompt-field {
+    height: 32px;
     margin-bottom: 8px;
-    min-height: 60px;
-}
-
-.prompt-field > TextInput {
-    background-color: rgba(30, 30, 30, 0.6);
-    border-color: rgba(255, 255, 255, 0.1);
+    background-color: #383838;
+    border-color: #4A4A4A;
+    border-width: 1px;
     border-radius: 4px;
-    padding: 8px;
 }
 
-.primary-button {
-    background-color: #4B9EF9;
+.prompt-field:hover {
+    border-color: #666666;
+}
+
+.prompt-field:focus {
+    border-color: #0E88F1;
+}
+
+.send-button {
+    height: 32px;
+    margin-bottom: 16px;
+    background-color: #0E88F1;
+    border-radius: 4px;
+    border-width: 0;
     color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    margin: 4px 0;
+    -unity-font-style: bold;
 }
 
-.primary-button:hover {
-    background-color: #3B8EE9;
+.send-button:hover {
+    background-color: #1E98FF;
 }
 
-.secondary-button {
-    background-color: rgba(75, 158, 249, 0.2);
-    border-color: #4B9EF9;
-    color: #4B9EF9;
-    padding: 8px 16px;
-    border-radius: 4px;
-    margin: 4px 0;
-}
-
-.secondary-button:hover {
-    background-color: rgba(75, 158, 249, 0.3);
+.send-button:active {
+    background-color: #0D78D1;
 }
 
 .scroll-view {
-    min-height: 100px;
-    max-height: 200px;
-    background-color: rgba(30, 30, 30, 0.6);
+    height: 200px;
+    background-color: #383838;
+    border-color: #4A4A4A;
+    border-width: 1px;
     border-radius: 4px;
     padding: 8px;
-    margin: 4px 0;
 }
 
-.output-field {
-    min-height: 100px;
-    background-color: rgba(30, 30, 30, 0.6);
+.script-preview {
+    height: 200px;
+    background-color: #383838;
+    border-color: #4A4A4A;
+    border-width: 1px;
     border-radius: 4px;
     padding: 8px;
-    margin: 4px 0;
+    white-space: normal;
+    -unity-font: url('Packages/com.unity.ide.vscode/Editor/Resources/RobotoMono-Regular.ttf');
 }
 
 .modes-dropdown {
-    margin: 4px 0;
-    background-color: rgba(30, 30, 30, 0.6);
+    height: 32px;
+    margin-bottom: 12px;
+    background-color: #383838;
+    border-color: #4A4A4A;
+    border-width: 1px;
     border-radius: 4px;
-    padding: 4px;
+    min-width: 200px;
 }
 
-.status-container {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Backend Manager specific styles */
-.path-field {
-    margin: 8px 0;
-    background-color: rgba(30, 30, 30, 0.6);
-    border-radius: 4px;
-    padding: 8px;
-}
-
-.path-field > TextInput {
-    background-color: rgba(30, 30, 30, 0.6);
-    border-color: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    padding: 8px;
-}
-
-.help-box {
-    margin: 8px 0;
-    padding: 12px;
-    background-color: rgba(75, 158, 249, 0.1);
-    border-color: rgba(75, 158, 249, 0.3);
-    border-radius: 4px;
-}
-
-.help-box > Label {
+.mode-description {
+    color: #B4B4B4;
+    font-size: 12px;
+    margin-bottom: 12px;
     white-space: normal;
-    color: #4B9EF9;
+    -unity-font-style: italic;
 }
 
-.status-indicator {
-    padding: 4px 8px;
+.run-mode-button {
+    height: 32px;
+    background-color: #2E7D32;
     border-radius: 4px;
-    margin: 4px;
-    flex-direction: row;
-    align-items: center;
+    border-width: 0;
+    color: white;
+    -unity-font-style: bold;
+    min-width: 120px;
+    padding: 8px 16px;
 }
 
-.status-indicator.running {
-    background-color: rgba(76, 175, 80, 0.2);
-    border-color: #4CAF50;
+.run-mode-button:hover {
+    background-color: #3E8E41;
 }
 
-.status-indicator.stopped {
-    background-color: rgba(244, 67, 54, 0.2);
-    border-color: #F44336;
-}
-
-.status-indicator > Label {
-    margin-left: 4px;
-    color: inherit;
-}
-
-.status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
-    margin-right: 4px;
-}
-
-.status-dot.running {
-    background-color: #4CAF50;
-}
-
-.status-dot.stopped {
-    background-color: #F44336;
+.run-mode-button:active {
+    background-color: #1B5E20;
 }
 
 .status-label {
-    padding: 4px 8px;
-    border-radius: 4px;
-    background-color: rgba(30, 30, 30, 0.6);
+    color: #B4B4B4;
 }
 
-.service-button {
-    padding: 4px 8px;
-    margin-left: 8px;
-    background-color: rgba(75, 158, 249, 0.1);
-    border-color: rgba(75, 158, 249, 0.3);
+.status-connected {
+    color: #4CAF50;
+}
+
+.status-error {
+    color: #F44336;
+}
+
+.task-item {
+    padding: 8px;
+    margin-bottom: 4px;
+    background-color: #424242;
     border-radius: 4px;
 }
 
-.service-button:hover {
-    background-color: rgba(75, 158, 249, 0.2);
+.task-item:hover {
+    background-color: #4A4A4A;
+}
+
+.section {
+    margin-bottom: 24px;
+    border-radius: 6px;
+    padding: 12px;
+    background-color: #333333;
+}
+
+.section:hover {
+    background-color: #383838;
+}
+
+.unity-text-field__input {
+    background-color: #424242;
+    border-color: #4A4A4A;
+    border-width: 1px;
+    border-radius: 4px;
+    padding: 8px;
+    color: #E4E4E4;
+}
+
+.unity-text-field__input:focus {
+    border-color: #0E88F1;
+    background-color: #4A4A4A;
+}
+
+.unity-popup-field__input {
+    background-color: #424242;
+    border-color: #4A4A4A;
+    border-width: 1px;
+    border-radius: 4px;
+    padding: 8px;
+    color: #E4E4E4;
+}
+
+.unity-popup-field__input:focus {
+    border-color: #0E88F1;
+    background-color: #4A4A4A;
 }

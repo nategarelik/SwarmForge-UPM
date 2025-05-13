@@ -1,0 +1,46 @@
+{
+  "modes": [
+    {
+      "name": "3D Environment Generator",
+      "description": "Generates 3D environments based on text descriptions",
+      "prompt_template": "Generate a 3D environment: {input}",
+      "system_prompt": "You are a specialized AI focused on generating detailed 3D environments in Unity. Break down environment requests into specific Unity GameObject creation and positioning tasks.",
+      "default_tasks": [
+        "Analyze environment description",
+        "Plan basic layout",
+        "Create terrain/ground",
+        "Add primary structures",
+        "Place decorative elements",
+        "Set up lighting"
+      ]
+    },
+    {
+      "name": "Character Creator",
+      "description": "Creates game characters with behaviors and animations",
+      "prompt_template": "Create a character: {input}",
+      "system_prompt": "You are a specialized AI focused on creating game characters in Unity. Break down character creation into specific tasks including model setup, animation, and behavior programming.",
+      "default_tasks": [
+        "Design character concept",
+        "Create basic model structure",
+        "Set up animations",
+        "Implement character controller",
+        "Add basic behaviors",
+        "Configure physics"
+      ]
+    },
+    {
+      "name": "Game Mechanics Designer",
+      "description": "Designs and implements game mechanics",
+      "prompt_template": "Design game mechanic: {input}",
+      "system_prompt": "You are a specialized AI focused on designing and implementing game mechanics in Unity. Break down mechanic requests into specific implementation tasks.",
+      "default_tasks": [
+        "Analyze mechanic requirements",
+        "Design core functionality",
+        "Create necessary scripts",
+        "Set up input handling",
+        "Implement feedback systems",
+        "Add polish and effects"
+      ]
+    }
+  ]
+}

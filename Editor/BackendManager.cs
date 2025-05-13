@@ -3,129 +3,82 @@ using UnityEditor;
 using System.Diagnostics;
 using System.IO;
 
-public class BackendManager : EditorWindow
+namespace SwarmForge.Editor
 {
-    private string swarmForgeProjectPath = "";
-    private const string SwarmForgeProjectPathKey = "SwarmForge_ProjectPath";
-
-    [MenuItem("SwarmForge/Backend Manager")]
-    public static void ShowWindow()
+    public class BackendManager : EditorWindow
     {
-        GetWindow<BackendManager>("SwarmForge Backend Manager");
-    }
+        private string swarmForgeProjectPath = "";
+        private const string SwarmForgeProjectPathKey = "SwarmForge_ProjectPath";
 
-    void OnEnable()
-    {
-        // Load the saved path when the window is enabled
-        swarmForgeProjectPath = EditorPrefs.GetString(SwarmForgeProjectPathKey, "");
-    }
+        [MenuItem("SwarmForge/Backend Manager")]
+        public static void ShowWindow()
+        {
+            GetWindow<BackendManager>("SwarmForge Backend Manager");
+        }
+
+        private void OnEnable()
+        {
+            // Load the saved path when the window is enabled
+            swarmForgeProjectPath = EditorPrefs.GetString(SwarmForgeProjectPathKey, "");
+        }
 
     void OnGUI()
     {
-        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Editor/SwarmForgeStyles.uss");
-        rootVisualElement.styleSheets.Add(styleSheet);
+        GUILayout.Label("SwarmForge Backend Configuration", EditorStyles.boldLabel);
+        EditorGUILayout.Space();
 
-        var container = new VisualElement { name = "MainContainer" };
-        container.AddToClassList("main-container");
-        rootVisualElement.Add(container);
-
-        CreateHeaderSection(container);
-        CreateConfigSection(container);
-        CreateServicesSection(container);
-        CreateStatusSection(container);
-    }
-
-    private void CreateHeaderSection(VisualElement parent)
-    {
-        var header = new VisualElement { name = "Header" };
-        header.AddToClassList("header");
+        // Project Path Section
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        GUILayout.Label("Project Configuration", EditorStyles.boldLabel);
         
-        var title = new Label("SwarmForge Backend") { name = "Title" };
-        title.AddToClassList("title");
-        header.Add(title);
+        GUILayout.Label("Path to your main SwarmForge Project (containing orchestrator.py and python/mcp/Dockerfile):");
+        swarmForgeProjectPath = EditorGUILayout.TextField("Project Path", swarmForgeProjectPath);
 
-        var subtitle = new Label("Service Manager") { name = "Subtitle" };
-        subtitle.AddToClassList("subtitle");
-        header.Add(subtitle);
-
-        parent.Add(header);
-    }
-
-    private void CreateConfigSection(VisualElement parent)
-    {
-        var section = new VisualElement { name = "ConfigSection" };
-        section.AddToClassList("section");
-
-        var header = new Label("Configuration") { name = "ConfigHeader" };
-        header.AddToClassList("section-header");
-        section.Add(header);
-
-        var pathField = new TextField("SwarmForge Project Path") {
-            value = swarmForgeProjectPath,
-            name = "ProjectPathField"
-        };
-        pathField.RegisterValueChangedCallback(evt => swarmForgeProjectPath = evt.newValue);
-        pathField.AddToClassList("path-field");
-        section.Add(pathField);
-
-        var saveButton = new Button(() => {
+        if (GUILayout.Button("Save Project Path"))
+        {
             EditorPrefs.SetString(SwarmForgeProjectPathKey, swarmForgeProjectPath);
             UnityEngine.Debug.Log("SwarmForge project path saved: " + swarmForgeProjectPath);
             ShowNotification(new GUIContent("Project path saved!"));
-        }) { text = "Save Path" };
-        saveButton.AddToClassList("primary-button");
-        section.Add(saveButton);
+        }
+        EditorGUILayout.EndVertical();
 
-        var helpBox = new HelpBox(
-            "Ensure Docker is running and the 'swarmforge-mcp' image has been built:\ncd [Project Path]/python/mcp && docker build -t swarmforge-mcp .",
-            HelpBoxMessageType.Info
-        );
-        helpBox.AddToClassList("help-box");
-        section.Add(helpBox);
+        EditorGUILayout.Space();
 
-        parent.Add(section);
+        // Custom Modes Section
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        GUILayout.Label("Custom Modes Management", EditorStyles.boldLabel);
+        
+        if (GUILayout.Button("Sync Custom Modes"))
+        {
+            SaveCustomModes();
+            ShowNotification(new GUIContent("Custom modes synced!"));
+        }
+        
+        EditorGUILayout.HelpBox("Custom modes are automatically synced when starting the orchestrator.", MessageType.Info);
+        EditorGUILayout.EndVertical();
+
+        EditorGUILayout.Space();
+
+        // Backend Services Section
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        GUILayout.Label("Manage Backend Services", EditorStyles.boldLabel);
+        
+        EditorGUILayout.HelpBox("Ensure Docker is running and the 'swarmforge-mcp' image has been built once manually from your main SwarmForge project: \ncd [Your SwarmForge Project Path]/python/mcp\ndocker build -t swarmforge-mcp .", MessageType.Info);
+        
+        if (GUILayout.Button("Start MCP Docker Container (swarmforge-mcp)"))
+        {
+            StartMCPContainer();
+        }
+
+        if (GUILayout.Button("Start Python Orchestrator (orchestrator.py)"))
+        {
+            SaveCustomModes(); // Sync custom modes before starting
+            StartOrchestrator();
+        }
+        EditorGUILayout.EndVertical();
     }
 
-    private void CreateServicesSection(VisualElement parent)
-    {
-        var section = new VisualElement { name = "ServicesSection" };
-        section.AddToClassList("section");
-
-        var header = new Label("Backend Services") { name = "ServicesHeader" };
-        header.AddToClassList("section-header");
-        section.Add(header);
-
-        var mcpButton = new Button(StartMCPContainer) { text = "Start MCP Server" };
-        mcpButton.AddToClassList("service-button");
-        section.Add(mcpButton);
-
-        var orchestratorButton = new Button(StartOrchestrator) { text = "Start Orchestrator" };
-        orchestratorButton.AddToClassList("service-button");
-        section.Add(orchestratorButton);
-
-        parent.Add(section);
-    }
-
-    private void CreateStatusSection(VisualElement parent)
-    {
-        var section = new VisualElement { name = "StatusSection" };
-        section.AddToClassList("section");
-
-        var header = new Label("Service Status") { name = "StatusHeader" };
-        header.AddToClassList("section-header");
-        section.Add(header);
-
-        var statusContainer = new VisualElement { name = "StatusContainer" };
-        statusContainer.AddToClassList("status-container");
-
-        // Add status indicators here when implementing service status monitoring
-        section.Add(statusContainer);
-
-        parent.Add(section);
-    }
-    }
-
-    public void StartMCPContainer()
+    private void StartMCPContainer()
     {
         if (string.IsNullOrEmpty(swarmForgeProjectPath))
         {
@@ -144,7 +97,28 @@ public class BackendManager : EditorWindow
         ExecuteCommand(command, args, "MCP Docker Container");
     }
 
-    public void StartOrchestrator()
+        private string GetCustomModesPath()
+        {
+            return Path.Combine(swarmForgeProjectPath, "Editor", "custom_modes.json");
+        }
+
+        private void SaveCustomModes()
+        {
+            if (string.IsNullOrEmpty(swarmForgeProjectPath))
+            {
+                UnityEngine.Debug.LogError("SwarmForge Project Path is not set.");
+                return;
+            }
+
+            string customModesPath = GetCustomModesPath();
+            if (File.Exists(customModesPath))
+            {
+                File.Copy(customModesPath, Path.Combine(swarmForgeProjectPath, "python", "custom_modes.json"), true);
+                UnityEngine.Debug.Log("Custom modes copied to Python directory");
+            }
+        }
+
+        private void StartOrchestrator()
     {
         if (string.IsNullOrEmpty(swarmForgeProjectPath))
         {
@@ -166,7 +140,7 @@ public class BackendManager : EditorWindow
         ExecuteCommand(command, args, "Python Orchestrator", swarmForgeProjectPath);
     }
 
-    private void ExecuteCommand(string command, string arguments, string processName, string workingDirectory = "")
+        private void ExecuteCommand(string command, string arguments, string processName, string workingDirectory = "")
     {
         try
         {
@@ -188,7 +162,7 @@ public class BackendManager : EditorWindow
             Process process = new Process { StartInfo = startInfo };
 
             process.OutputDataReceived += (sender, e) => { if (e.Data != null) UnityEngine.Debug.Log($"[{processName} Output]: {e.Data}"); };
-            process.ErrorDataReceived += (sender, e) => { if (e.Data != null) UnityEngine.Debug.Log($"[{processName}]: {e.Data}"); };
+            process.ErrorDataReceived += (sender, e) => { if (e.Data != null) UnityEngine.Debug.Log($"[{processName} Error]: {e.Data}"); };
 
             process.Start();
             process.BeginOutputReadLine();
@@ -205,5 +179,6 @@ public class BackendManager : EditorWindow
             UnityEngine.Debug.LogError($"Error starting {processName}: {ex.Message}");
             ShowNotification(new GUIContent($"Error starting {processName}!"));
         }
+    }
     }
 }
