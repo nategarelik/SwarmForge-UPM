@@ -79,7 +79,7 @@ namespace SwarmForge.Assets.Stubs
             return Task.FromResult(new AssetGenerationResult { Success = false, ErrorMessage = "StubProBuilderGenerator requires EnhancedAssetGenerationParams with ProBuilder details for generic GenerateAsset." });
         }
 
-        public Task<bool> CancelGeneration(string requestId)
+        Task<bool> CancelGeneration(string requestId)
         {
             Debug.LogWarning($"[StubProBuilderGenerator] CancelGeneration called for {requestId}. Not implemented.");
             return Task.FromResult(true);
@@ -128,7 +128,7 @@ namespace SwarmForge.Assets.Stubs
             return Task.FromResult(new AssetGenerationResult { Success = false, ErrorMessage = "StubBlenderBridge requires EnhancedAssetGenerationParams with Blender details for generic GenerateAsset." });
         }
 
-        public Task<bool> CancelGeneration(string requestId)
+        Task<bool> CancelGeneration(string requestId)
         {
             Debug.LogWarning($"[StubBlenderBridge] CancelGeneration called for {requestId}. Not implemented.");
             return Task.FromResult(true);
@@ -191,7 +191,7 @@ namespace SwarmForge.Assets.Stubs
             return Task.FromResult(new AssetGenerationResult { Success = false, ErrorMessage = "StubAIImageGenerator requires EnhancedAssetGenerationParams with ImageGen details for generic GenerateAsset." });
         }
 
-        public Task<bool> CancelGeneration(string requestId)
+        Task<bool> CancelGeneration(string requestId)
         {
             Debug.LogWarning($"[StubAIImageGenerator] CancelGeneration called for {requestId}. Not implemented.");
             return Task.FromResult(true);
@@ -242,7 +242,7 @@ namespace SwarmForge.Assets.Stubs
             return Task.FromResult(new AssetGenerationResult { Success = false, ErrorMessage = "StubProceduralGenerator requires EnhancedAssetGenerationParams with Procedural details for generic GenerateAsset." });
         }
 
-        public Task<bool> CancelGeneration(string requestId)
+        Task<bool> CancelGeneration(string requestId)
         {
             Debug.LogWarning($"[StubProceduralGenerator] CancelGeneration called for {requestId}. Not implemented.");
             return Task.FromResult(true);
