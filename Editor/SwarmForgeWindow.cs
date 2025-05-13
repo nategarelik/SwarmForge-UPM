@@ -32,72 +32,138 @@ public class SwarmForgeWindow : EditorWindow
 
     public void CreateGUI()
     {
-        // Root styling
-        rootVisualElement.style.flexDirection = FlexDirection.Column;
-        rootVisualElement.style.paddingLeft = 10;
-        rootVisualElement.style.paddingRight = 10;
-        rootVisualElement.style.paddingTop = 10;
+        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Packages/com.swarmforge.tool/Editor/SwarmForgeStyles.uss");
+        rootVisualElement.styleSheets.Add(styleSheet);
+        
+        var container = new VisualElement { name = "MainContainer" };
+        container.AddToClassList("main-container");
+        rootVisualElement.Add(container);
 
-        // Prompt input
-        promptField = new TextField("Prompt");
-        promptField.multiline = false;
-        rootVisualElement.Add(promptField);
-
-        sendButton = new Button(() => SendRequest(promptField.value))
-        {
-            text = "Send"
-        };
-        rootVisualElement.Add(sendButton);
-
-        // Tasks list
-        rootVisualElement.Add(new Label("AI-Generated Tasks"));
-        tasksScrollView = new ScrollView();
-        tasksScrollView.style.flexGrow = 1;
-        tasksScrollView.name = "TasksScrollView";
-        rootVisualElement.Add(tasksScrollView);
-
-        // Script preview
-        scriptPreviewField = new TextField("Script Preview")
-        {
-            multiline = true,
-            isReadOnly = true
-        };
-        scriptPreviewField.style.flexGrow = 1;
-        scriptPreviewField.name = "ScriptPreviewField";
-        rootVisualElement.Add(scriptPreviewField);
-
-        // Log output
-        rootVisualElement.Add(new Label("Log Output"));
-        logScrollView = new ScrollView();
-        logScrollView.style.flexGrow = 1;
-        logScrollView.name = "LogScrollView";
-        rootVisualElement.Add(logScrollView);
-
-        // WebSocket status
-        rootVisualElement.Add(new Label("WebSocket Status"));
-        statusLabel = new Label("Disconnected");
-        statusLabel.name = "WebSocketStatusLabel";
-        rootVisualElement.Add(statusLabel);
-
-        // Custom modes dropdown
-        rootVisualElement.Add(new Label("Custom Modes"));
-        customModes = new List<string>();
-        modesDropdown = new PopupField<string>("Modes", customModes, 0) { name = "CustomModesDropdown" };
-        rootVisualElement.Add(modesDropdown);
-
-        runModeButton = new Button(() => RunCustomMode(modesDropdown.value)) { text = "Run Mode" };
-        rootVisualElement.Add(runModeButton);
+        CreateHeaderSection(container);
+        CreatePromptSection(container);
+        CreateTaskSection(container);
+        CreateModeSection(container);
+        CreateOutputSection(container);
+        CreateStatusSection(container);
 
         InitializeWebSocket();
         SendCustomModesRequest();
+    }
 
-        // Backend service controls
-        rootVisualElement.Add(new Label("Backend Services"));
+    private void CreateHeaderSection(VisualElement parent)
+    {
+        var header = new VisualElement { name = "Header" };
+        header.AddToClassList("header");
+        
+        var title = new Label("SwarmForge AI") { name = "Title" };
+        title.AddToClassList("title");
+        header.Add(title);
+
+        var subtitle = new Label("Unity AI Assistant") { name = "Subtitle" };
+        subtitle.AddToClassList("subtitle");
+        header.Add(subtitle);
+
+        parent.Add(header);
+    }
+
+    private void CreatePromptSection(VisualElement parent)
+    {
+        var section = new VisualElement { name = "PromptSection" };
+        section.AddToClassList("section");
+
+        promptField = new TextField("What would you like me to do?") { name = "PromptField" };
+        promptField.multiline = true;
+        promptField.AddToClassList("prompt-field");
+        section.Add(promptField);
+
+        sendButton = new Button(() => SendRequest(promptField.value)) { text = "Generate" };
+        sendButton.AddToClassList("primary-button");
+        section.Add(sendButton);
+
+        parent.Add(section);
+    }
+
+    private void CreateTaskSection(VisualElement parent)
+    {
+        var section = new VisualElement { name = "TaskSection" };
+        section.AddToClassList("section");
+
+        var header = new Label("Generated Tasks") { name = "TasksHeader" };
+        header.AddToClassList("section-header");
+        section.Add(header);
+
+        tasksScrollView = new ScrollView { name = "TasksScrollView" };
+        tasksScrollView.AddToClassList("scroll-view");
+        section.Add(tasksScrollView);
+
+        parent.Add(section);
+    }
+
+    private void CreateModeSection(VisualElement parent)
+    {
+        var section = new VisualElement { name = "ModeSection" };
+        section.AddToClassList("section");
+
+        var header = new Label("AI Modes") { name = "ModesHeader" };
+        header.AddToClassList("section-header");
+        section.Add(header);
+
+        customModes = new List<string>();
+        modesDropdown = new PopupField<string>("Select Mode", customModes, 0) { name = "ModesDropdown" };
+        modesDropdown.AddToClassList("modes-dropdown");
+        section.Add(modesDropdown);
+
+        runModeButton = new Button(() => RunCustomMode(modesDropdown.value)) { text = "Run Selected Mode" };
+        runModeButton.AddToClassList("secondary-button");
+        section.Add(runModeButton);
+
+        parent.Add(section);
+    }
+
+    private void CreateOutputSection(VisualElement parent)
+    {
+        var section = new VisualElement { name = "OutputSection" };
+        section.AddToClassList("section");
+
+        var header = new Label("Output") { name = "OutputHeader" };
+        header.AddToClassList("section-header");
+        section.Add(header);
+
+        scriptPreviewField = new TextField { name = "ScriptPreview", multiline = true, isReadOnly = true };
+        scriptPreviewField.AddToClassList("output-field");
+        section.Add(scriptPreviewField);
+
+        logScrollView = new ScrollView { name = "LogScrollView" };
+        logScrollView.AddToClassList("scroll-view");
+        section.Add(logScrollView);
+
+        parent.Add(section);
+    }
+
+    private void CreateStatusSection(VisualElement parent)
+    {
+        var section = new VisualElement { name = "StatusSection" };
+        section.AddToClassList("section");
+
+        var statusContainer = new VisualElement { name = "StatusContainer" };
+        statusContainer.AddToClassList("status-container");
+
+        statusLabel = new Label("Disconnected") { name = "StatusLabel" };
+        statusLabel.AddToClassList("status-label");
+        statusContainer.Add(statusLabel);
+
         var backendManager = GetWindow<BackendManager>();
-        var dockerButton = new Button(() => backendManager.StartMCPContainer()) { text = "Start MCP Docker Container" };
-        rootVisualElement.Add(dockerButton);
-        var orchestratorButton = new Button(() => backendManager.StartOrchestrator()) { text = "Start Python Orchestrator" };
-        rootVisualElement.Add(orchestratorButton);
+        
+        var dockerButton = new Button(() => backendManager.StartMCPContainer()) { text = "Start MCP Server" };
+        dockerButton.AddToClassList("service-button");
+        statusContainer.Add(dockerButton);
+
+        var orchestratorButton = new Button(() => backendManager.StartOrchestrator()) { text = "Start Orchestrator" };
+        orchestratorButton.AddToClassList("service-button");
+        statusContainer.Add(orchestratorButton);
+
+        section.Add(statusContainer);
+        parent.Add(section);
     }
 
     private async void InitializeWebSocket()
