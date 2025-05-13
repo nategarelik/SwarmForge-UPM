@@ -1,21 +1,10 @@
-# SwarmForge Tool
+# SwarmForge
 
-A Unity-native AI swarm orchestrator for automating game development tasks.
+AI-powered Unity development assistant.
 
-## Installation
+## Install
 
-1. Open Unity Package Manager
-2. Click the + button in the top-left corner
-3. Select "Add package from git URL"
-4. Enter the following URL:
+Package Manager > + > "Add package from git URL" >
 ```
 https://github.com/nategarelik/SwarmForge-UPM.git#release/upm-v1.1.0
 ```
-
-## Features
-
-- AI-powered task automation
-- Custom mode support
-- Integrated backend services
-- Modern Unity Editor UI
-- Docker container support
