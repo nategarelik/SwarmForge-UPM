@@ -113,9 +113,9 @@ namespace SwarmForge.Networking
                     Debug.LogWarning($"[WebSocketClient] Received message with no type: {jsonMessage}");
                     return;
                 }
-
-                // Debug.Log($"[WebSocketClient] Message type: {genericMessage.Type}");
-
+ 
+                Debug.Log($"[WebSocketClient] Message type: {genericMessage.Type}"); // Uncommented for debugging
+ 
                 switch (genericMessage.Type)
                 {
                     case "task_update":
