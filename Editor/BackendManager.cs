@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEditor;
 using System.Diagnostics;
 using System.IO;
+using SwarmForge.Core; // Added for SwarmForgeCoreService
+using System.Text.RegularExpressions; // Added for Regex
 
 namespace SwarmForge.Editor
 {
@@ -162,7 +164,31 @@ namespace SwarmForge.Editor
             Process process = new Process { StartInfo = startInfo };
 
             process.OutputDataReceived += (sender, e) => { if (e.Data != null) UnityEngine.Debug.Log($"[{processName} Output]: {e.Data}"); };
-            process.ErrorDataReceived += (sender, e) => { if (e.Data != null) UnityEngine.Debug.Log($"[{processName} Error]: {e.Data}"); };
+            process.ErrorDataReceived += (sender, e) =>
+            {
+                if (e.Data != null)
+                {
+                    UnityEngine.Debug.Log($"[{processName} Error]: {e.Data}");
+                    if (processName == "Python Orchestrator" && e.Data.Contains("Orchestrator server started on fallback port"))
+                    {
+                        // Try to parse the port
+                        // Example log: "[Python Orchestrator Error]: INFO:__main__:Orchestrator server started on fallback port 56781"
+                        var match = Regex.Match(e.Data, @"fallback port (\d+)");
+                        if (match.Success && int.TryParse(match.Groups[1].Value, out int fallbackPort))
+                        {
+                            UnityEngine.Debug.Log($"[{processName}] Detected fallback port: {fallbackPort}. Updating WebSocketClient.");
+                            if (SwarmForgeCoreService.Instance != null && SwarmForgeCoreService.Instance.WsClient != null)
+                            {
+                                SwarmForgeCoreService.Instance.WsClient.UpdateServerPort(fallbackPort);
+                            }
+                            else
+                            {
+                                UnityEngine.Debug.LogError($"[{processName}] SwarmForgeCoreService.Instance or WsClient is null. Cannot update port.");
+                            }
+                        }
+                    }
+                }
+            };
 
             process.Start();
             process.BeginOutputReadLine();

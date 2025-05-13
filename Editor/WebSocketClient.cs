@@ -12,8 +12,19 @@ namespace SwarmForge.Networking
     public class WebSocketClient
     {
         private ClientWebSocket ws;
-        private Uri serverUri = new Uri("ws://localhost:8765"); // As per docs/websocket_plugin_architecture.md:37
+        private Uri serverUri = new Uri("ws://localhost:8765"); // Default port
         private CancellationTokenSource cts;
+
+        public void UpdateServerPort(int newPort)
+        {
+            if (IsConnected)
+            {
+                Debug.LogWarning("[WebSocketClient] Cannot update port while connected. Please disconnect first.");
+                return;
+            }
+            serverUri = new Uri($"ws://localhost:{newPort}");
+            Debug.Log($"[WebSocketClient] Server URI updated to: {serverUri}");
+        }
 
         public event Action OnOpened;
         public event Action<string> OnError;
