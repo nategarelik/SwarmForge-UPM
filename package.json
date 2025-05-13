@@ -1,9 +1,8 @@
 {
   "name": "com.swarmforge.tool",
-  "version": "1.1.0",
   "displayName": "SwarmForge Tool",
   "description": "A Unity-native AI swarm orchestrator for automating game development tasks.",
-  "unity": "6000.0",
+  "unity": "2021.3",
   "dependencies": {},
   "keywords": [
     "swarmforge",
@@ -13,8 +12,6 @@
     "automation"
   ],
   "author": {
-    "name": "Roo Code",
-    "email": "support@roocode.com",
-    "url": "https://roocode.com"
+    "name": "Nate Garelik"
   }
 }
