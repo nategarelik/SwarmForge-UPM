@@ -190,6 +190,7 @@ namespace SwarmForge.Assets.Stubs
             OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 1.0f, StatusMessage = "Stub: Generic AI Image asset generation failed (params mismatch)." });
             return Task.FromResult(new AssetGenerationResult { Success = false, ErrorMessage = "StubAIImageGenerator requires EnhancedAssetGenerationParams with ImageGen details for generic GenerateAsset." });
         }
+    // FIX: Added missing closing brace for GenerateAsset
 
         public Task<bool> CancelGeneration(string requestId)
         {
