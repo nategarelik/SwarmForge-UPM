@@ -192,7 +192,7 @@ namespace SwarmForge.Assets.Stubs
         }
     // FIX REMOVED: Extra closing brace removed to keep CancelGeneration inside class
 
-        public Task<bool> CancelGeneration(string requestId)
+        Task<bool> IAIImageGenerator.CancelGeneration(string requestId)
         {
             Debug.LogWarning($"[StubAIImageGenerator] CancelGeneration called for {requestId}. Not implemented.");
             return Task.FromResult(true);
