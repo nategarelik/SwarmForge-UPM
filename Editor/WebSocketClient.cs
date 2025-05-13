@@ -78,7 +78,7 @@ namespace SwarmForge.Networking
                     else if (result.MessageType == WebSocketMessageType.Text)
                     {
                         var messageJson = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                        // Debug.Log($"[WebSocketClient] Received: {messageJson}");
+                        Debug.Log($"[WebSocketClient] Raw Received: {messageJson}"); // Added logging for raw message
                         HandleTextMessage(messageJson);
                     }
                 }
