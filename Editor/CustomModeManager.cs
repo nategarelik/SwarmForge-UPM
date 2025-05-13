@@ -3,6 +3,7 @@ using UnityEditor;
 using System;
 using System.IO;
 using System.Collections.Generic;
+using UnityEditor.PackageManager; // Added for PackageInfo
 
 [Serializable]
 public class CustomMode
@@ -56,32 +57,55 @@ public class CustomModeManager
     private string GetConfigPath()
     {
         string targetFileName = "custom_modes.json";
-        string targetPathSuffix = Path.Combine("Editor", targetFileName); // e.g., "Editor/custom_modes.json"
-        string packageName = "com.swarmforge.tool"; // The name of your package
+        string relativePathInPackage = Path.Combine("Editor", targetFileName); // "Editor/custom_modes.json"
 
-        // Find assets by name and type. This is more robust than just name.
-        string[] guids = AssetDatabase.FindAssets($"{Path.GetFileNameWithoutExtension(targetFileName)} t:TextAsset");
-        
-        foreach (string guid in guids)
+        try
         {
-            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-            // assetPath is relative to the Project root, e.g., "Packages/com.swarmforge.tool/Editor/custom_modes.json"
-            // or "Assets/SomeFolder/custom_modes.json"
-
-            // Check if the found asset is the one we're looking for in our package
-            // Ensure it's in a "Packages" folder, our specific package, and has the correct suffix.
-            if (assetPath.StartsWith($"Packages/{packageName}/") && assetPath.EndsWith(targetPathSuffix))
+            // Get the MonoScript for the current class
+            MonoScript selfScript = MonoScript.FromType(typeof(CustomModeManager));
+            if (selfScript == null)
             {
-                // AssetDatabase.GetAssetPath returns a path relative to the project root.
-                // File.IO operations generally work well with these project-relative paths.
-                // For extra safety, or if issues arise, Path.GetFullPath() can convert it.
-                // return Path.GetFullPath(assetPath); // Use this if relative paths cause issues
-                return assetPath; // Return project-relative path
+                Debug.LogError("Could not find MonoScript for CustomModeManager. Cannot determine package path.");
+                return null;
+            }
+
+            string selfAssetPath = AssetDatabase.GetAssetPath(selfScript);
+            if (string.IsNullOrEmpty(selfAssetPath))
+            {
+                Debug.LogError($"Could not get asset path for CustomModeManager's script. Path was '{selfAssetPath}'. Cannot determine package path.");
+                return null;
+            }
+
+            // Find the package info for this asset path
+            // Requires 'using UnityEditor.PackageManager;'
+            PackageInfo packageInfo = PackageInfo.FindForAssetPath(selfAssetPath);
+            if (packageInfo == null)
+            {
+                Debug.LogError($"Could not find PackageInfo for asset path '{selfAssetPath}'. This script might not be part of a package. Ensure it's in a UPM package.");
+                return null;
+            }
+            
+            string packageRootAssetPath = packageInfo.assetPath;
+            string configAssetPath = Path.Combine(packageRootAssetPath, relativePathInPackage);
+            configAssetPath = configAssetPath.Replace("\\", "/"); // Normalize to forward slashes
+
+            if (File.Exists(configAssetPath))
+            {
+                return configAssetPath;
+            }
+            else
+            {
+                string fullSystemPathAttempt = "[Could not determine full path]";
+                try { fullSystemPathAttempt = Path.GetFullPath(configAssetPath); } catch { /* ignore */ }
+                Debug.LogError($"Constructed config path '{configAssetPath}' (system path: '{fullSystemPathAttempt}') but file does not exist or is not accessible. Custom modes functionality will be impaired.");
+                return null;
             }
         }
-
-        Debug.LogError($"Could not find '{targetPathSuffix}' in package '{packageName}' using AssetDatabase.FindAssets. Custom modes functionality will be impaired.");
-        return null;
+        catch (Exception e) // Catches System.Exception
+        {
+            Debug.LogError($"Exception while trying to determine config path for '{relativePathInPackage}': {e.Message}\n{e.StackTrace}");
+            return null;
+        }
     }
 
     private void LoadConfig()
