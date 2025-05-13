@@ -6,5 +6,5 @@ AI-powered Unity development assistant.
 
 Package Manager > + > "Add package from git URL" >
 ```
-https://github.com/nategarelik/SwarmForge-UPM.git#release/upm-v1.1.0
+https://github.com/nategarelik/SwarmForge-UPM.git#v1.1.0
 ```
