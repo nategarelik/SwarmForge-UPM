@@ -107,7 +107,17 @@ namespace SwarmForge.Core
 
         private void HandleTaskUpdateReceived(WebSocketMessage<TaskUpdateData> message)
         {
-            Debug.Log($"[SwarmForgeCoreService] Task Update: {message.Data.TaskId} - {message.Data.Status}");
+            Debug.Log($"[SwarmForgeCoreService] Task Update Received. TaskId: {message.Data.TaskId}, Status: {message.Data.Status}, RequestId: {message.RequestId}");
+            // Enhanced logging for details
+            if (message.Data.Details != null)
+            {
+                Debug.Log($"[SwarmForgeCoreService] Task Update Details: {message.Data.Details}");
+            }
+            else
+            {
+                Debug.LogWarning($"[SwarmForgeCoreService] Task Update Details object is null for TaskId: {message.Data.TaskId}");
+            }
+
             OnTaskUpdate?.Invoke(message);
             // Potentially update UI or trigger Unity API actions based on task status
             if (message.Data.Status == "CompletedSuccessfully_CreatePrimitive") // Example specific status
