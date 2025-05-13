@@ -89,7 +89,7 @@ public class CustomModeManager
 
             // Find the package info for this asset path
             // Requires 'using UnityEditor.PackageManager;'
-            UnityEditor.PackageManager.UnityEditor.PackageManager.PackageInfo packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssetPath(selfAssetPath);
+            UnityEditor.PackageManager.PackageInfo packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssetPath(selfAssetPath);
             if (packageInfo == null)
             {
                 Debug.LogError($"Could not find UnityEditor.PackageManager.PackageInfo for asset path '{selfAssetPath}'. This script might not be part of a package. Ensure it's in a UPM package.");
