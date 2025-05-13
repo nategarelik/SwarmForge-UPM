@@ -241,12 +241,11 @@ namespace SwarmForge.Assets.Stubs
             return Task.FromResult(new AssetGenerationResult { Success = false, ErrorMessage = "StubProceduralGenerator requires EnhancedAssetGenerationParams with Procedural details for generic GenerateAsset." });
             }
 
-            public Task<bool> CancelGeneration(string requestId)
-            {
-                Debug.LogWarning($"[StubProceduralGenerator] CancelGeneration called for {requestId}. Not implemented.");
-                return Task.FromResult(true);
-            }
+        public Task<bool> CancelGeneration(string requestId)
+        {
+            Debug.LogWarning($"[StubProceduralGenerator] CancelGeneration called for {requestId}. Not implemented.");
+            return Task.FromResult(true);
         }
-    } 
     }
+}
 }
