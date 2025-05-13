@@ -180,4 +180,5 @@ namespace SwarmForge.Editor
             ShowNotification(new GUIContent($"Error starting {processName}!"));
         }
     }
+    }
 }
