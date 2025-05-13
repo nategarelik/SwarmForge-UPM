@@ -90,6 +90,14 @@ public class SwarmForgeWindow : EditorWindow
 
         InitializeWebSocket();
         SendCustomModesRequest();
+
+        // Backend service controls
+        rootVisualElement.Add(new Label("Backend Services"));
+        var backendManager = GetWindow<BackendManager>();
+        var dockerButton = new Button(() => backendManager.StartMCPContainer()) { text = "Start MCP Docker Container" };
+        rootVisualElement.Add(dockerButton);
+        var orchestratorButton = new Button(() => backendManager.StartOrchestrator()) { text = "Start Python Orchestrator" };
+        rootVisualElement.Add(orchestratorButton);
     }
 
     private async void InitializeWebSocket()
