@@ -23,7 +23,7 @@ public class CustomModeManager
 {
     private static CustomModeManager instance;
     private CustomModeConfig config;
-    private const string CONFIG_PATH = "Editor/custom_modes.json";
+    private const string CONFIG_PATH = "Assets/Editor/custom_modes.json";
 
     public static CustomModeManager Instance
     {

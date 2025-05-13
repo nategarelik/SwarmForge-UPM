@@ -142,7 +142,6 @@ public class SwarmForgeWindow : EditorWindow
         rootVisualElement.Add(modesSection);
 
         InitializeWebSocket();
-        SendCustomModesRequest();
     }
 
     private async void InitializeWebSocket()
