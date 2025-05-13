@@ -197,6 +197,7 @@ namespace SwarmForge.Assets.Stubs
             return Task.FromResult(true);
         }
     }
+    }
 
     public class StubProceduralGenerator : IProceduralGenerator
     {
