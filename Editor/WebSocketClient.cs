@@ -114,9 +114,9 @@ namespace SwarmForge.Networking
                     return;
                 }
  
-                Debug.Log($"[WebSocketClient] Message type: {genericMessage.Type}"); // Uncommented for debugging
+                Debug.Log($"[WebSocketClient] Message type: [{genericMessage.Type}] Length: {genericMessage.Type?.Length}"); // Enhanced debugging
  
-                switch (genericMessage.Type)
+                switch (genericMessage.Type?.Trim()) // Added Trim() to handle potential whitespace
                 {
                     case "task_update":
                         var taskUpdateMsg = JsonConvert.DeserializeObject<WebSocketMessage<TaskUpdateData>>(jsonMessage);
