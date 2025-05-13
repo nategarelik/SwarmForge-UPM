@@ -197,7 +197,6 @@ namespace SwarmForge.Assets.Stubs
             return Task.FromResult(true);
         }
     }
-    }
 
     public class StubProceduralGenerator : IProceduralGenerator
     {
@@ -240,12 +239,14 @@ namespace SwarmForge.Assets.Stubs
             }
             OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 1.0f, StatusMessage = "Stub: Generic Procedural asset generation failed (params mismatch)." });
             return Task.FromResult(new AssetGenerationResult { Success = false, ErrorMessage = "StubProceduralGenerator requires EnhancedAssetGenerationParams with Procedural details for generic GenerateAsset." });
-        }
+            }
 
-        Task<bool> CancelGeneration(string requestId)
-        {
-            Debug.LogWarning($"[StubProceduralGenerator] CancelGeneration called for {requestId}. Not implemented.");
-            return Task.FromResult(true);
+            Task<bool> CancelGeneration(string requestId)
+            {
+                Debug.LogWarning($"[StubProceduralGenerator] CancelGeneration called for {requestId}. Not implemented.");
+                return Task.FromResult(true);
+            }
         }
+    } 
     }
 }
