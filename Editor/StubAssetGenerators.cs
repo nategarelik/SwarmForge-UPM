@@ -6,7 +6,7 @@ using System; // For Action
 
 namespace SwarmForge.Assets.Stubs
 {
-    public class StubProBuilderGenerator : IProBuilderGenerator
+    class StubProBuilderGenerator : IProBuilderGenerator
     {
         public event Action<AssetGenerationProgress> OnProgressUpdate;
 
