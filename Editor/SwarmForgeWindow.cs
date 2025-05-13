@@ -35,8 +35,23 @@ public class SwarmForgeWindow : EditorWindow
 
     public void CreateGUI()
     {
-        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Editor/SwarmForgeStyles.uss");
-        rootVisualElement.styleSheets.Add(styleSheet);
+        // Attempt to load the stylesheet from the package path, as indicated by the stack trace.
+        // The package name "com.swarmforge.tool" is inferred from the stack trace.
+        string styleSheetPath = "Packages/com.swarmforge.tool/Editor/SwarmForgeStyles.uss";
+        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(styleSheetPath);
+
+        if (styleSheet == null)
+        {
+            // Log an error if the stylesheet is not found. This helps diagnose path issues
+            // or problems with the asset itself (e.g., not imported correctly).
+            Debug.LogError($"[SwarmForgeWindow] StyleSheet not found at path: {styleSheetPath}. " +
+                           "Please ensure SwarmForgeStyles.uss is correctly placed within the 'com.swarmforge.tool' package " +
+                           "and is properly imported by Unity.");
+        }
+        else
+        {
+            rootVisualElement.styleSheets.Add(styleSheet);
+        }
         rootVisualElement.AddToClassList("root");
 
         // Header
