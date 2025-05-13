@@ -64,9 +64,9 @@ namespace SwarmForge.Assets.Stubs
             // For now, assuming it might be used for simpler, non-enhanced requests or needs casting.
             Debug.LogWarning($"[StubProBuilderGenerator] Generic GenerateAsset called. AssetType: {assetParams?.AssetType}. Not fully implemented for specific ProBuilder ops via this path in stub.");
             OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 0.5f, StatusMessage = "Stub: Generic asset generation initiated." });
-            if (assetParams != null && assetParams.GetType() == typeof(EnhancedAssetGenerationParams))
+            var enhancedParams = assetParams as EnhancedAssetGenerationParams;
+            if (enhancedParams != null)
             {
-                var enhancedParams = (EnhancedAssetGenerationParams)assetParams;
                 if (enhancedParams.ProBuilder != null)
                 {
                     // Potentially route to CreatePrimitive or similar based on enhancedParams.
@@ -115,9 +115,9 @@ namespace SwarmForge.Assets.Stubs
         {
             Debug.LogWarning($"[StubBlenderBridge] Generic GenerateAsset called. AssetType: {assetParams?.AssetType}. Not fully implemented for specific Blender ops via this path in stub.");
             OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 0.5f, StatusMessage = "Stub: Generic Blender asset generation initiated." });
-            if (assetParams != null && assetParams.GetType() == typeof(EnhancedAssetGenerationParams))
+            var enhancedParams = assetParams as EnhancedAssetGenerationParams;
+            if (enhancedParams != null)
             {
-                var enhancedParams = (EnhancedAssetGenerationParams)assetParams;
                 if (enhancedParams.Blender != null)
                 {
                      OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 1.0f, StatusMessage = "Stub: Generic Blender asset generated (simulated)." });
@@ -177,27 +177,26 @@ namespace SwarmForge.Assets.Stubs
         {
             Debug.LogWarning($"[StubAIImageGenerator] Generic GenerateAsset called. AssetType: {assetParams?.AssetType}. Not fully implemented for specific AI Image ops via this path in stub.");
             OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 0.5f, StatusMessage = "Stub: Generic AI Image asset generation initiated." });
-                        if (assetParams != null && assetParams.GetType() == typeof(EnhancedAssetGenerationParams))
+            var enhancedParams = assetParams as EnhancedAssetGenerationParams;
+            if (enhancedParams != null)
             {
-                var enhancedParams = (EnhancedAssetGenerationParams)assetParams;
                 if (enhancedParams.ImageGen != null)
                 {
-                // Here we'd ideally save the texture and return path.
-                // For stub, just simulate.
-                OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 1.0f, StatusMessage = "Stub: Generic AI Image asset generated (simulated)." });
-                return Task.FromResult(new AssetGenerationResult { Success = true, AssetPath = "Generated/StubAIImage.png" });
+                    // Here we'd ideally save the texture and return path.
+                    // For stub, just simulate.
+                    OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 1.0f, StatusMessage = "Stub: Generic AI Image asset generated (simulated)." });
+                    return Task.FromResult(new AssetGenerationResult { Success = true, AssetPath = "Generated/StubAIImage.png" });
+                }
             }
             OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 1.0f, StatusMessage = "Stub: Generic AI Image asset generation failed (params mismatch)." });
             return Task.FromResult(new AssetGenerationResult { Success = false, ErrorMessage = "StubAIImageGenerator requires EnhancedAssetGenerationParams with ImageGen details for generic GenerateAsset." });
         }
-    // FIX REMOVED: Extra closing brace removed to keep CancelGeneration inside class
-
 
         Task<bool> IAssetGenerator.CancelGeneration(string requestId)
         {
+            Debug.LogWarning($"[StubAIImageGenerator] CancelGeneration called for {requestId}. Not implemented.");
             return Task.FromResult(true);
         }
-
     }
 
     public class StubProceduralGenerator : IProceduralGenerator
@@ -231,18 +230,16 @@ namespace SwarmForge.Assets.Stubs
         {
             Debug.LogWarning($"[StubProceduralGenerator] Generic GenerateAsset called. AssetType: {assetParams?.AssetType}. Not fully implemented for specific Procedural ops via this path in stub.");
             OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 0.5f, StatusMessage = "Stub: Generic Procedural asset generation initiated." });
-            if (assetParams != null && assetParams.GetType() == typeof(EnhancedAssetGenerationParams))
+            if (assetParams is EnhancedAssetGenerationParams enhancedParams)
             {
-                var enhancedParams = (EnhancedAssetGenerationParams)assetParams;
                 if (enhancedParams.Procedural != null)
                 {
                 OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 1.0f, StatusMessage = "Stub: Generic Procedural asset generated (simulated)." });
                 return Task.FromResult(new AssetGenerationResult { Success = true, AssetPath = "Generated/StubProceduralAsset.prefab" });
+                }
             }
             OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 1.0f, StatusMessage = "Stub: Generic Procedural asset generation failed (params mismatch)." });
             return Task.FromResult(new AssetGenerationResult { Success = false, ErrorMessage = "StubProceduralGenerator requires EnhancedAssetGenerationParams with Procedural details for generic GenerateAsset." });
-            }
-
         }
 
         public Task<bool> CancelGeneration(string requestId)
@@ -251,5 +248,5 @@ namespace SwarmForge.Assets.Stubs
             return Task.FromResult(true);
         }
     }
-}
+
 }
