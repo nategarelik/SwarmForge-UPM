@@ -22,7 +22,7 @@ public class BackendManager : EditorWindow
 
     void OnGUI()
     {
-        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Packages/com.swarmforge.tool/Editor/SwarmForgeStyles.uss");
+        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Editor/SwarmForgeStyles.uss");
         rootVisualElement.styleSheets.Add(styleSheet);
 
         var container = new VisualElement { name = "MainContainer" };
