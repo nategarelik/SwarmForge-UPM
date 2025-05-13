@@ -52,7 +52,7 @@ public class BackendManager : EditorWindow
         }
     }
 
-    private void StartMCPContainer()
+    public void StartMCPContainer()
     {
         if (string.IsNullOrEmpty(swarmForgeProjectPath))
         {
@@ -71,7 +71,7 @@ public class BackendManager : EditorWindow
         ExecuteCommand(command, args, "MCP Docker Container");
     }
 
-    private void StartOrchestrator()
+    public void StartOrchestrator()
     {
         if (string.IsNullOrEmpty(swarmForgeProjectPath))
         {
