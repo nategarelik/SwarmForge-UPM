@@ -62,7 +62,18 @@ public class CustomModeManager
         try
         {
             // Get the MonoScript for the current class
-            MonoScript selfScript = MonoScript.FromType(typeof(CustomModeManager));
+            // MonoScript selfScript = MonoScript.FromType(typeof(CustomModeManager));
+            MonoScript selfScript = null;
+            string[] guids = AssetDatabase.FindAssets("t:MonoScript CustomModeManager");
+            foreach (string guid in guids)
+            {
+                var script = AssetDatabase.LoadAssetAtPath<MonoScript>(AssetDatabase.GUIDToAssetPath(guid));
+                if (script != null && script.GetClass() == typeof(CustomModeManager))
+                {
+                    selfScript = script;
+                    break;
+                }
+            }
             if (selfScript == null)
             {
                 Debug.LogError("Could not find MonoScript for CustomModeManager. Cannot determine package path.");
@@ -78,10 +89,10 @@ public class CustomModeManager
 
             // Find the package info for this asset path
             // Requires 'using UnityEditor.PackageManager;'
-            PackageInfo packageInfo = PackageInfo.FindForAssetPath(selfAssetPath);
+            UnityEditor.PackageManager.UnityEditor.PackageManager.PackageInfo packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssetPath(selfAssetPath);
             if (packageInfo == null)
             {
-                Debug.LogError($"Could not find PackageInfo for asset path '{selfAssetPath}'. This script might not be part of a package. Ensure it's in a UPM package.");
+                Debug.LogError($"Could not find UnityEditor.PackageManager.PackageInfo for asset path '{selfAssetPath}'. This script might not be part of a package. Ensure it's in a UPM package.");
                 return null;
             }
             

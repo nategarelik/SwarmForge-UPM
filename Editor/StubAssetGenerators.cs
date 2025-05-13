@@ -64,7 +64,8 @@ namespace SwarmForge.Assets.Stubs
             // For now, assuming it might be used for simpler, non-enhanced requests or needs casting.
             Debug.LogWarning($"[StubProBuilderGenerator] Generic GenerateAsset called. AssetType: {assetParams?.AssetType}. Not fully implemented for specific ProBuilder ops via this path in stub.");
             OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 0.5f, StatusMessage = "Stub: Generic asset generation initiated." });
-            if (assetParams is EnhancedAssetGenerationParams enhancedParams && enhancedParams.ProBuilder != null)
+            var enhancedParams = assetParams as EnhancedAssetGenerationParams;
+            if (enhancedParams != null && enhancedParams.ProBuilder != null)
             {
                 // Potentially route to CreatePrimitive or similar based on enhancedParams.
                 // For a simple stub, just return a success.
@@ -111,7 +112,8 @@ namespace SwarmForge.Assets.Stubs
         {
             Debug.LogWarning($"[StubBlenderBridge] Generic GenerateAsset called. AssetType: {assetParams?.AssetType}. Not fully implemented for specific Blender ops via this path in stub.");
             OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 0.5f, StatusMessage = "Stub: Generic Blender asset generation initiated." });
-            if (assetParams is EnhancedAssetGenerationParams enhancedParams && enhancedParams.Blender != null)
+            var enhancedParams = assetParams as EnhancedAssetGenerationParams;
+            if (enhancedParams != null && enhancedParams.Blender != null)
             {
                  OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 1.0f, StatusMessage = "Stub: Generic Blender asset generated (simulated)." });
                 return Task.FromResult(new AssetGenerationResult { Success = true, AssetPath = "Generated/StubBlenderAsset.fbx" });
@@ -169,7 +171,8 @@ namespace SwarmForge.Assets.Stubs
         {
             Debug.LogWarning($"[StubAIImageGenerator] Generic GenerateAsset called. AssetType: {assetParams?.AssetType}. Not fully implemented for specific AI Image ops via this path in stub.");
             OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 0.5f, StatusMessage = "Stub: Generic AI Image asset generation initiated." });
-             if (assetParams is EnhancedAssetGenerationParams enhancedParams && enhancedParams.ImageGen != null)
+                        var enhancedParams = assetParams as EnhancedAssetGenerationParams;
+            if (enhancedParams != null && enhancedParams.ImageGen != null)
             {
                 // Here we'd ideally save the texture and return path.
                 // For stub, just simulate.
@@ -218,7 +221,8 @@ namespace SwarmForge.Assets.Stubs
         {
             Debug.LogWarning($"[StubProceduralGenerator] Generic GenerateAsset called. AssetType: {assetParams?.AssetType}. Not fully implemented for specific Procedural ops via this path in stub.");
             OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 0.5f, StatusMessage = "Stub: Generic Procedural asset generation initiated." });
-            if (assetParams is EnhancedAssetGenerationParams enhancedParams && enhancedParams.Procedural != null)
+            var enhancedParams = assetParams as EnhancedAssetGenerationParams;
+            if (enhancedParams != null && enhancedParams.Procedural != null)
             {
                 OnProgressUpdate?.Invoke(new AssetGenerationProgress { RequestId = requestId, Progress = 1.0f, StatusMessage = "Stub: Generic Procedural asset generated (simulated)." });
                 return Task.FromResult(new AssetGenerationResult { Success = true, AssetPath = "Generated/StubProceduralAsset.prefab" });
