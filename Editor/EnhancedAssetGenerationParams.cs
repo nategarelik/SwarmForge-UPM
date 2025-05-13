@@ -20,13 +20,8 @@ public class ProBuilderOperation
     public Dictionary<string, object> Parameters { get; set; }
 }
 
-public class EnhancedAssetGenerationParams
+public class EnhancedAssetGenerationParams : AssetGenerationParams
 {
-    // Base properties
-    public string AssetType { get; set; } // e.g., "3DModel", "Texture", "Material"
-    public string AssetName { get; set; }
-    public string Description { get; set; }
-    
     // Tool-specific properties
     public ProBuilderParams ProBuilder { get; set; }
     public BlenderParams Blender { get; set; }
