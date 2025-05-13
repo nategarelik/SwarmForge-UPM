@@ -115,7 +115,7 @@ public class BackendManager : EditorWindow
             Process process = new Process { StartInfo = startInfo };
 
             process.OutputDataReceived += (sender, e) => { if (e.Data != null) UnityEngine.Debug.Log($"[{processName} Output]: {e.Data}"); };
-            process.ErrorDataReceived += (sender, e) => { if (e.Data != null) UnityEngine.Debug.LogError($"[{processName} Error]: {e.Data}"); };
+            process.ErrorDataReceived += (sender, e) => { if (e.Data != null) UnityEngine.Debug.Log($"[{processName}]: {e.Data}"); };
 
             process.Start();
             process.BeginOutputReadLine();
