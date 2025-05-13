@@ -8,9 +8,7 @@ public class CustomMode
 {
     public string name;
     public string description;
-    public string prompt_template;
     public string system_prompt;
-    public string[] default_tasks;
 }
 
 [Serializable]
@@ -23,7 +21,7 @@ public class CustomModeManager
 {
     private static CustomModeManager instance;
     private CustomModeConfig config;
-    private const string CONFIG_PATH = "Assets/Editor/custom_modes.json";
+    private const string CONFIG_PATH = "Editor/custom_modes.json";
 
     public static CustomModeManager Instance
     {
@@ -49,23 +47,10 @@ public class CustomModeManager
         return Array.Find(config.modes, m => m.name == name);
     }
 
-    public string FormatPrompt(string modeName, string input)
-    {
-        var mode = GetMode(modeName);
-        if (mode == null) return input;
-        return mode.prompt_template.Replace("{input}", input);
-    }
-
     public string GetSystemPrompt(string modeName)
     {
         var mode = GetMode(modeName);
         return mode?.system_prompt ?? "";
-    }
-
-    public string[] GetDefaultTasks(string modeName)
-    {
-        var mode = GetMode(modeName);
-        return mode?.default_tasks ?? new string[0];
     }
 
     private void LoadConfig()
