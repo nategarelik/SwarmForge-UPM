@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEditor; // Added for PackageInfo
+using UnityEditor.PackageManager; // Added for PackageInfo
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -57,13 +59,37 @@ public class CustomModeManager
     {
         try
         {
-            string json = File.ReadAllText(CONFIG_PATH);
+            var packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssembly(typeof(CustomModeManager).Assembly);
+            if (packageInfo == null)
+            {
+                Debug.LogError("Could not find package information for CustomModeManager. Custom modes will not be loaded.");
+                config = new CustomModeConfig { modes = new CustomMode[0] };
+                return;
+            }
+            string fullConfigPath = Path.Combine(packageInfo.resolvedPath, CONFIG_PATH);
+
+            if (!File.Exists(fullConfigPath))
+            {
+                Debug.LogWarning($"Custom modes configuration file not found at {fullConfigPath}. A new one will be created if modes are added/saved.");
+                config = new CustomModeConfig { modes = new CustomMode[0] }; // Initialize with empty config
+                return;
+            }
+
+            string json = File.ReadAllText(fullConfigPath);
             config = JsonUtility.FromJson<CustomModeConfig>(json);
-            Debug.Log("Custom modes loaded successfully");
+            if (config == null) // JsonUtility.FromJson can return null if JSON is malformed or empty
+            {
+                Debug.LogWarning($"Failed to parse custom modes configuration from {fullConfigPath}. Initializing with empty config.");
+                config = new CustomModeConfig { modes = new CustomMode[0] };
+            }
+            else
+            {
+                Debug.Log($"Custom modes loaded successfully from {fullConfigPath}");
+            }
         }
         catch (Exception e)
         {
-            Debug.LogError($"Error loading custom modes: {e.Message}");
+            Debug.LogError($"Error loading custom modes: {e.Message}\nStackTrace: {e.StackTrace}");
             config = new CustomModeConfig { modes = new CustomMode[0] };
         }
     }
@@ -72,13 +98,28 @@ public class CustomModeManager
     {
         try
         {
+            var packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssembly(typeof(CustomModeManager).Assembly);
+            if (packageInfo == null)
+            {
+                Debug.LogError("Could not find package information for CustomModeManager. Custom modes cannot be saved.");
+                return;
+            }
+            string fullConfigPath = Path.Combine(packageInfo.resolvedPath, CONFIG_PATH);
+            
+            // Ensure directory exists
+            string directoryPath = Path.GetDirectoryName(fullConfigPath);
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
             string json = JsonUtility.ToJson(config, true);
-            File.WriteAllText(CONFIG_PATH, json);
-            Debug.Log("Custom modes saved successfully");
+            File.WriteAllText(fullConfigPath, json);
+            Debug.Log($"Custom modes saved successfully to {fullConfigPath}");
         }
         catch (Exception e)
         {
-            Debug.LogError($"Error saving custom modes: {e.Message}");
+            Debug.LogError($"Error saving custom modes: {e.Message}\nStackTrace: {e.StackTrace}");
         }
     }
 
