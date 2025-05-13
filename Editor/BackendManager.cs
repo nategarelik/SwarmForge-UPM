@@ -22,34 +22,107 @@ public class BackendManager : EditorWindow
 
     void OnGUI()
     {
-        GUILayout.Label("SwarmForge Backend Configuration", EditorStyles.boldLabel);
-        EditorGUILayout.Space();
+        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Editor/SwarmForgeStyles.uss");
+        rootVisualElement.styleSheets.Add(styleSheet);
 
-        GUILayout.Label("Path to your main SwarmForge Project (containing orchestrator.py and python/mcp/Dockerfile):");
-        swarmForgeProjectPath = EditorGUILayout.TextField("Project Path", swarmForgeProjectPath);
+        var container = new VisualElement { name = "MainContainer" };
+        container.AddToClassList("main-container");
+        rootVisualElement.Add(container);
 
-        if (GUILayout.Button("Save Project Path"))
-        {
+        CreateHeaderSection(container);
+        CreateConfigSection(container);
+        CreateServicesSection(container);
+        CreateStatusSection(container);
+    }
+
+    private void CreateHeaderSection(VisualElement parent)
+    {
+        var header = new VisualElement { name = "Header" };
+        header.AddToClassList("header");
+        
+        var title = new Label("SwarmForge Backend") { name = "Title" };
+        title.AddToClassList("title");
+        header.Add(title);
+
+        var subtitle = new Label("Service Manager") { name = "Subtitle" };
+        subtitle.AddToClassList("subtitle");
+        header.Add(subtitle);
+
+        parent.Add(header);
+    }
+
+    private void CreateConfigSection(VisualElement parent)
+    {
+        var section = new VisualElement { name = "ConfigSection" };
+        section.AddToClassList("section");
+
+        var header = new Label("Configuration") { name = "ConfigHeader" };
+        header.AddToClassList("section-header");
+        section.Add(header);
+
+        var pathField = new TextField("SwarmForge Project Path") {
+            value = swarmForgeProjectPath,
+            name = "ProjectPathField"
+        };
+        pathField.RegisterValueChangedCallback(evt => swarmForgeProjectPath = evt.newValue);
+        pathField.AddToClassList("path-field");
+        section.Add(pathField);
+
+        var saveButton = new Button(() => {
             EditorPrefs.SetString(SwarmForgeProjectPathKey, swarmForgeProjectPath);
             UnityEngine.Debug.Log("SwarmForge project path saved: " + swarmForgeProjectPath);
             ShowNotification(new GUIContent("Project path saved!"));
-        }
+        }) { text = "Save Path" };
+        saveButton.AddToClassList("primary-button");
+        section.Add(saveButton);
 
-        EditorGUILayout.Space();
-        EditorGUILayout.HelpBox("Ensure Docker is running and the 'swarmforge-mcp' image has been built once manually from your main SwarmForge project: \ncd [Your SwarmForge Project Path]/python/mcp\ndocker build -t swarmforge-mcp .", MessageType.Info);
-        EditorGUILayout.Space();
+        var helpBox = new HelpBox(
+            "Ensure Docker is running and the 'swarmforge-mcp' image has been built:\ncd [Project Path]/python/mcp && docker build -t swarmforge-mcp .",
+            HelpBoxMessageType.Info
+        );
+        helpBox.AddToClassList("help-box");
+        section.Add(helpBox);
 
-        GUILayout.Label("Manage Backend Services", EditorStyles.boldLabel);
+        parent.Add(section);
+    }
 
-        if (GUILayout.Button("Start MCP Docker Container (swarmforge-mcp)"))
-        {
-            StartMCPContainer();
-        }
+    private void CreateServicesSection(VisualElement parent)
+    {
+        var section = new VisualElement { name = "ServicesSection" };
+        section.AddToClassList("section");
 
-        if (GUILayout.Button("Start Python Orchestrator (orchestrator.py)"))
-        {
-            StartOrchestrator();
-        }
+        var header = new Label("Backend Services") { name = "ServicesHeader" };
+        header.AddToClassList("section-header");
+        section.Add(header);
+
+        var mcpButton = new Button(StartMCPContainer) { text = "Start MCP Server" };
+        mcpButton.AddToClassList("service-button");
+        section.Add(mcpButton);
+
+        var orchestratorButton = new Button(StartOrchestrator) { text = "Start Orchestrator" };
+        orchestratorButton.AddToClassList("service-button");
+        section.Add(orchestratorButton);
+
+        parent.Add(section);
+    }
+
+    private void CreateStatusSection(VisualElement parent)
+    {
+        var section = new VisualElement { name = "StatusSection" };
+        section.AddToClassList("section");
+
+        var header = new Label("Service Status") { name = "StatusHeader" };
+        header.AddToClassList("section-header");
+        section.Add(header);
+
+        var statusContainer = new VisualElement { name = "StatusContainer" };
+        statusContainer.AddToClassList("status-container");
+
+        // Add status indicators here when implementing service status monitoring
+        section.Add(statusContainer);
+
+        parent.Add(section);
+    }
     }
 
     public void StartMCPContainer()

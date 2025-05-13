@@ -1,0 +1,188 @@
+.main-container {
+    padding: 16px;
+    flex-grow: 1;
+}
+
+.header {
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.title {
+    font-size: 24px;
+    -unity-font-style: bold;
+    color: #4B9EF9;
+    margin-bottom: 4px;
+}
+
+.subtitle {
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+.section {
+    margin-bottom: 16px;
+    padding: 12px;
+    background-color: rgba(40, 40, 40, 0.3);
+    border-radius: 4px;
+}
+
+.section-header {
+    font-size: 16px;
+    -unity-font-style: bold;
+    margin-bottom: 8px;
+    color: #4B9EF9;
+}
+
+.prompt-field {
+    margin-bottom: 8px;
+    min-height: 60px;
+}
+
+.prompt-field > TextInput {
+    background-color: rgba(30, 30, 30, 0.6);
+    border-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.primary-button {
+    background-color: #4B9EF9;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    margin: 4px 0;
+}
+
+.primary-button:hover {
+    background-color: #3B8EE9;
+}
+
+.secondary-button {
+    background-color: rgba(75, 158, 249, 0.2);
+    border-color: #4B9EF9;
+    color: #4B9EF9;
+    padding: 8px 16px;
+    border-radius: 4px;
+    margin: 4px 0;
+}
+
+.secondary-button:hover {
+    background-color: rgba(75, 158, 249, 0.3);
+}
+
+.scroll-view {
+    min-height: 100px;
+    max-height: 200px;
+    background-color: rgba(30, 30, 30, 0.6);
+    border-radius: 4px;
+    padding: 8px;
+    margin: 4px 0;
+}
+
+.output-field {
+    min-height: 100px;
+    background-color: rgba(30, 30, 30, 0.6);
+    border-radius: 4px;
+    padding: 8px;
+    margin: 4px 0;
+}
+
+.modes-dropdown {
+    margin: 4px 0;
+    background-color: rgba(30, 30, 30, 0.6);
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.status-container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Backend Manager specific styles */
+.path-field {
+    margin: 8px 0;
+    background-color: rgba(30, 30, 30, 0.6);
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.path-field > TextInput {
+    background-color: rgba(30, 30, 30, 0.6);
+    border-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.help-box {
+    margin: 8px 0;
+    padding: 12px;
+    background-color: rgba(75, 158, 249, 0.1);
+    border-color: rgba(75, 158, 249, 0.3);
+    border-radius: 4px;
+}
+
+.help-box > Label {
+    white-space: normal;
+    color: #4B9EF9;
+}
+
+.status-indicator {
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin: 4px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.status-indicator.running {
+    background-color: rgba(76, 175, 80, 0.2);
+    border-color: #4CAF50;
+}
+
+.status-indicator.stopped {
+    background-color: rgba(244, 67, 54, 0.2);
+    border-color: #F44336;
+}
+
+.status-indicator > Label {
+    margin-left: 4px;
+    color: inherit;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    margin-right: 4px;
+}
+
+.status-dot.running {
+    background-color: #4CAF50;
+}
+
+.status-dot.stopped {
+    background-color: #F44336;
+}
+
+.status-label {
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: rgba(30, 30, 30, 0.6);
+}
+
+.service-button {
+    padding: 4px 8px;
+    margin-left: 8px;
+    background-color: rgba(75, 158, 249, 0.1);
+    border-color: rgba(75, 158, 249, 0.3);
+    border-radius: 4px;
+}
+
+.service-button:hover {
+    background-color: rgba(75, 158, 249, 0.2);
+}
