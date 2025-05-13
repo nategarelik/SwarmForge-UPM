@@ -1,6 +1,5 @@
 using UnityEngine;
-using UnityEditor; // Added for PackageInfo
-using UnityEditor.PackageManager; // Added for PackageInfo
+using UnityEditor;
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -23,7 +22,6 @@ public class CustomModeManager
 {
     private static CustomModeManager instance;
     private CustomModeConfig config;
-    private const string CONFIG_PATH = "Editor/custom_modes.json";
 
     public static CustomModeManager Instance
     {
@@ -55,29 +53,61 @@ public class CustomModeManager
         return mode?.system_prompt ?? "";
     }
 
+    private string GetConfigPath()
+    {
+        string targetFileName = "custom_modes.json";
+        string targetPathSuffix = Path.Combine("Editor", targetFileName); // e.g., "Editor/custom_modes.json"
+        string packageName = "com.swarmforge.tool"; // The name of your package
+
+        // Find assets by name and type. This is more robust than just name.
+        string[] guids = AssetDatabase.FindAssets($"{Path.GetFileNameWithoutExtension(targetFileName)} t:TextAsset");
+        
+        foreach (string guid in guids)
+        {
+            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+            // assetPath is relative to the Project root, e.g., "Packages/com.swarmforge.tool/Editor/custom_modes.json"
+            // or "Assets/SomeFolder/custom_modes.json"
+
+            // Check if the found asset is the one we're looking for in our package
+            // Ensure it's in a "Packages" folder, our specific package, and has the correct suffix.
+            if (assetPath.StartsWith($"Packages/{packageName}/") && assetPath.EndsWith(targetPathSuffix))
+            {
+                // AssetDatabase.GetAssetPath returns a path relative to the project root.
+                // File.IO operations generally work well with these project-relative paths.
+                // For extra safety, or if issues arise, Path.GetFullPath() can convert it.
+                // return Path.GetFullPath(assetPath); // Use this if relative paths cause issues
+                return assetPath; // Return project-relative path
+            }
+        }
+
+        Debug.LogError($"Could not find '{targetPathSuffix}' in package '{packageName}' using AssetDatabase.FindAssets. Custom modes functionality will be impaired.");
+        return null;
+    }
+
     private void LoadConfig()
     {
         try
         {
-            var packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssembly(typeof(CustomModeManager).Assembly);
-            if (packageInfo == null)
+            string fullConfigPath = GetConfigPath();
+
+            if (string.IsNullOrEmpty(fullConfigPath))
             {
-                Debug.LogError("Could not find package information for CustomModeManager. Custom modes will not be loaded.");
+                // GetConfigPath already logged an error
                 config = new CustomModeConfig { modes = new CustomMode[0] };
                 return;
             }
-            string fullConfigPath = Path.Combine(packageInfo.resolvedPath, CONFIG_PATH);
-
+            
             if (!File.Exists(fullConfigPath))
             {
                 Debug.LogWarning($"Custom modes configuration file not found at {fullConfigPath}. A new one will be created if modes are added/saved.");
-                config = new CustomModeConfig { modes = new CustomMode[0] }; // Initialize with empty config
+                config = new CustomModeConfig { modes = new CustomMode[0] };
                 return;
             }
 
             string json = File.ReadAllText(fullConfigPath);
             config = JsonUtility.FromJson<CustomModeConfig>(json);
-            if (config == null) // JsonUtility.FromJson can return null if JSON is malformed or empty
+
+            if (config == null)
             {
                 Debug.LogWarning($"Failed to parse custom modes configuration from {fullConfigPath}. Initializing with empty config.");
                 config = new CustomModeConfig { modes = new CustomMode[0] };
@@ -98,17 +128,18 @@ public class CustomModeManager
     {
         try
         {
-            var packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssembly(typeof(CustomModeManager).Assembly);
-            if (packageInfo == null)
+            string fullConfigPath = GetConfigPath();
+
+            if (string.IsNullOrEmpty(fullConfigPath))
             {
-                Debug.LogError("Could not find package information for CustomModeManager. Custom modes cannot be saved.");
+                // GetConfigPath already logged an error, so no need to save.
+                Debug.LogError("Cannot save custom modes: configuration file path could not be determined.");
                 return;
             }
-            string fullConfigPath = Path.Combine(packageInfo.resolvedPath, CONFIG_PATH);
             
-            // Ensure directory exists
+            // Ensure directory exists (Path.GetDirectoryName works with relative paths too)
             string directoryPath = Path.GetDirectoryName(fullConfigPath);
-            if (!Directory.Exists(directoryPath))
+            if (!string.IsNullOrEmpty(directoryPath) && !Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
             }
