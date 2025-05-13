@@ -2,6 +2,7 @@
   "name": "com.swarmforge.tool",
   "displayName": "SwarmForge Tool",
   "description": "A Unity-native AI swarm orchestrator for automating game development tasks.",
+  "version": "1.1.0",
   "unity": "2021.3",
   "dependencies": {},
   "keywords": [
