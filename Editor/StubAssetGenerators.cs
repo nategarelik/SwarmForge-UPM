@@ -195,7 +195,6 @@ namespace SwarmForge.Assets.Stubs
 
         Task<bool> IAssetGenerator.CancelGeneration(string requestId)
         {
-            Debug.LogWarning($"[StubAIImageGenerator] CancelGeneration called for {requestId}. Not implemented.");
             return Task.FromResult(true);
         }
 
