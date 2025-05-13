@@ -67,8 +67,9 @@ namespace SwarmForge.Core
             WsClient.OnTaskUpdateReceived += HandleTaskUpdateReceived;
             WsClient.OnCustomModesReceived += HandleCustomModesReceived;
             WsClient.OnErrorMessageReceived += HandleErrorMessageReceived;
+            WsClient.OnTasksReceived += HandleTasksReceived; // Added subscription
         }
-
+ 
         public async Task ConnectAsync()
         {
             if (!WsClient.IsConnected)
@@ -159,8 +160,46 @@ namespace SwarmForge.Core
             UnityApiBridge.ShowNotification($"Server Error: {message.Data.Message}");
         }
 
+        private void HandleTasksReceived(WebSocketMessage<TasksMessageData> message)
+        {
+            Debug.Log($"[SwarmForgeCoreService] Received 'tasks' message with {message.Data.Tasks?.Length ?? 0} tasks. RequestId: {message.RequestId}");
+            if (message.Data.Tasks != null)
+            {
+                foreach (var taskItem in message.Data.Tasks)
+                {
+                    Debug.Log($"[SwarmForgeCoreService] Processing Task Item ID: {taskItem.Id}, Type: {taskItem.Type}, Agent: {taskItem.Agent}, Description: {taskItem.Description}");
+                    // TODO: Implement dispatch logic based on taskItem.Type and taskItem.Agent
+                    // For now, just logging the intent.
+                    switch (taskItem.Agent)
+                    {
+                        case "unity_command":
+                            Debug.Log($"[SwarmForgeCoreService] Task {taskItem.Id} ({taskItem.Type}) for unity_command: {taskItem.Description}. Needs Unity API call.");
+                            // Example: if (taskItem.Description.Contains("Create player GameObject")) { /* UnityApiBridge.CreatePlayer(); */ }
+                            break;
+                        case "script_generator":
+                            Debug.Log($"[SwarmForgeCoreService] Task {taskItem.Id} ({taskItem.Type}) for script_generator: {taskItem.Description}. Needs script generation.");
+                            // Example: ScriptGenerator.GenerateScript(taskItem.Description, ...);
+                            break;
+                        case "level_designer":
+                            Debug.Log($"[SwarmForgeCoreService] Task {taskItem.Id} ({taskItem.Type}) for level_designer: {taskItem.Description}. Needs level design action.");
+                            break;
+                        case "qa_agent":
+                             Debug.Log($"[SwarmForgeCoreService] Task {taskItem.Id} ({taskItem.Type}) for qa_agent: {taskItem.Description}. Needs QA action.");
+                            break;
+                        default:
+                            Debug.LogWarning($"[SwarmForgeCoreService] Task {taskItem.Id} has unknown agent: {taskItem.Agent}");
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogWarning("[SwarmForgeCoreService] 'tasks' message received with null Tasks array.");
+            }
+        }
+ 
         // --- Methods to send requests to the server ---
-
+ 
         public void RequestCustomModes()
         {
             if (!WsClient.IsConnected) return;
@@ -227,6 +266,7 @@ namespace SwarmForge.Core
             WsClient.OnTaskUpdateReceived -= HandleTaskUpdateReceived;
             WsClient.OnCustomModesReceived -= HandleCustomModesReceived;
             WsClient.OnErrorMessageReceived -= HandleErrorMessageReceived;
+            WsClient.OnTasksReceived -= HandleTasksReceived; // Added unsubscription
             instance = null;
         }
     }

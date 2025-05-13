@@ -113,4 +113,28 @@ namespace SwarmForge.Communication
         [JsonProperty("code")]
         public string Code { get; set; }
     }
+
+    // Added for "tasks" message type
+    [Serializable]
+    public class TaskItemData
+    {
+        [JsonProperty("id")]
+        public int Id { get; set; }
+
+        [JsonProperty("type")]
+        public string Type { get; set; }
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
+
+        [JsonProperty("agent")]
+        public string Agent { get; set; }
+    }
+
+    [Serializable]
+    public class TasksMessageData
+    {
+        [JsonProperty("tasks")]
+        public TaskItemData[] Tasks { get; set; }
+    }
 }

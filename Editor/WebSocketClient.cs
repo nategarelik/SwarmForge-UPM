@@ -23,8 +23,9 @@ namespace SwarmForge.Networking
         public event Action<WebSocketMessage<TaskUpdateData>> OnTaskUpdateReceived;
         public event Action<WebSocketMessage<CustomModesData>> OnCustomModesReceived;
         public event Action<WebSocketMessage<ErrorData>> OnErrorMessageReceived;
+        public event Action<WebSocketMessage<TasksMessageData>> OnTasksReceived; // Added for "tasks" message
         // Add more specific events as needed for other Server -> Editor messages
-
+ 
         public bool IsConnected => ws != null && ws.State == WebSocketState.Open;
 
         public async Task ConnectAsync()
@@ -117,6 +118,10 @@ namespace SwarmForge.Networking
                     case "error":
                         var errorMsg = JsonConvert.DeserializeObject<WebSocketMessage<ErrorData>>(jsonMessage);
                         OnErrorMessageReceived?.Invoke(errorMsg);
+                        break;
+                    case "tasks": // Added case for "tasks" message
+                        var tasksMsg = JsonConvert.DeserializeObject<WebSocketMessage<TasksMessageData>>(jsonMessage);
+                        OnTasksReceived?.Invoke(tasksMsg);
                         break;
                     // Add cases for other Server -> Editor messages from docs/websocket_plugin_architecture.md
                     default:
