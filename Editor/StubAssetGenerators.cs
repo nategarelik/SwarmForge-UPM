@@ -6,7 +6,7 @@ using System; // For Action
 
 namespace SwarmForge.Assets.Stubs
 {
-    class StubProBuilderGenerator : IProBuilderGenerator
+    public class StubProBuilderGenerator : IProBuilderGenerator
     {
         public event Action<AssetGenerationProgress> OnProgressUpdate;
 
@@ -192,7 +192,7 @@ namespace SwarmForge.Assets.Stubs
         }
     // FIX REMOVED: Extra closing brace removed to keep CancelGeneration inside class
 
-        Task<bool> IAIImageGenerator.CancelGeneration(string requestId)
+        Task<bool> IAssetGenerator.CancelGeneration(string requestId)
         {
             Debug.LogWarning($"[StubAIImageGenerator] CancelGeneration called for {requestId}. Not implemented.");
             return Task.FromResult(true);
